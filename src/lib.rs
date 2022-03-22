@@ -1,59 +1,80 @@
+extern crate js_sys;
+extern crate web_sys;
+
+mod species;
 mod utils;
 
+use rand::{Rng, SeedableRng};
+use rand_xoshiro::SplitMix64;
+use species::Species;
 use wasm_bindgen::prelude::*;
 
-// When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
-// allocator.
-#[cfg(feature = "wee_alloc")]
-#[global_allocator]
-static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
-
-// #[wasm_bindgen]
-// extern "C" {
-//     fn alert(s: &str);
-// }
-
-// #[wasm_bindgen]
-// pub fn greet(name: &str) {
-//     alert(&format!("Hello, {}!", name));
-// }
+// A macro to provide `println!(..)`-style syntax for `console.log` logging.
+macro_rules! log {
+    ( $( $t:tt )* ) => {
+        web_sys::console::log_1(&format!( $( $t )* ).into());
+    }
+}
 
 #[wasm_bindgen]
-#[repr(u8)]
+#[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum Cell {
-    Dead = 0,
-    Alive = 1,
+pub struct Cell {
+    species: Species,
+    ra: u8,
+    rb: u8,
+    clock: u8,
 }
 
 #[wasm_bindgen]
 pub struct Universe {
-    width: u32,
-    height: u32,
+    width: i32,
+    height: i32,
     cells: Vec<Cell>,
+    rng: SplitMix64,
+    generation: u8,
 }
+
+// impl Cell {
+//     fn toggle(&mut self) {
+//         *self = match *self {
+//             Cell::Dead => Cell::Alive,
+//             Cell::Alive => Cell::Dead,
+//         }
+//     }
+// }
+
+impl Cell {
+    pub unsafe fn new(species: Species) -> Cell {
+        Cell {
+            species: species,
+            ra: 1,
+            // ra: 100 + (js_sys::Math::random() * 50.) as u8,
+            rb: 0,
+            clock: 0,
+        }
+    }
+    // pub fn update(&self, api: SandApi) {
+    //     self.species.update(*self, api);
+    // }
+}
+
+static EMPTY_CELL: Cell = Cell {
+    species: Species::Empty,
+    ra: 0,
+    rb: 0,
+    clock: 0,
+};
 
 #[wasm_bindgen]
 impl Universe {
-    fn get_index(&self, row: u32, column: u32) -> usize {
+    fn get_index(&self, row: i32, column: i32) -> usize {
         (row * self.width + column) as usize
     }
 
-    fn live_neighbor_count(&self, row: u32, column: u32) -> u8 {
-        let mut count = 0;
-        for delta_row in [self.height - 1, 0, 1].iter().cloned() {
-            for delta_col in [self.width - 1, 0, 1].iter().cloned() {
-                if delta_row == 0 && delta_col == 0 {
-                    continue;
-                }
-
-                let neighbor_row = (row + delta_row) % self.height;
-                let neighbor_col = (column + delta_col) % self.width;
-                let idx = self.get_index(neighbor_row, neighbor_col);
-                count += self.cells[idx] as u8;
-            }
-        }
-        count
+    fn get_cell(&self, x: i32, y: i32) -> Cell {
+        let i = self.get_index(x, y);
+        return self.cells[i];
     }
 
     pub fn tick(&mut self) {
@@ -62,27 +83,7 @@ impl Universe {
         for row in 0..self.height {
             for col in 0..self.width {
                 let idx = self.get_index(row, col);
-                let cell = self.cells[idx];
-                let live_neighbors = self.live_neighbor_count(row, col);
-
-                let next_cell = match (cell, live_neighbors) {
-                    // Rule 1: Any live cell with fewer than two live neighbours
-                    // dies, as if caused by underpopulation.
-                    (Cell::Alive, x) if x < 2 => Cell::Dead,
-                    // Rule 2: Any live cell with two or three live neighbours
-                    // lives on to the next generation.
-                    (Cell::Alive, 2) | (Cell::Alive, 3) => Cell::Alive,
-                    // Rule 3: Any live cell with more than three live
-                    // neighbours dies, as if by overpopulation.
-                    (Cell::Alive, x) if x > 3 => Cell::Dead,
-                    // Rule 4: Any dead cell with exactly three live neighbours
-                    // becomes a live cell, as if by reproduction.
-                    (Cell::Dead, 3) => Cell::Alive,
-                    // All other cells remain in the same state.
-                    (otherwise, _) => otherwise,
-                };
-
-                next[idx] = next_cell;
+                let cell = &self.cells[idx];
             }
         }
 
@@ -90,42 +91,79 @@ impl Universe {
     }
 
     pub fn new() -> Universe {
-        let width = 64;
-        let height = 64;
-
-        let cells = (0..width * height)
-            .map(|i| {
-                if i % 2 == 0 || i % 7 == 0 {
-                    Cell::Alive
-                } else {
-                    Cell::Dead
-                }
-            })
-            .collect();
+        let width = 150;
+        let height = 150;
+        let cells = (0..width * height).map(|_i| EMPTY_CELL).collect();
+        let rng: SplitMix64 = SeedableRng::seed_from_u64(0x734f6b89de5f83cc);
         Universe {
             width,
             height,
             cells,
+            rng,
+            generation: 0,
         }
     }
 
-    pub fn render(&self) -> String {
-        self.to_string()
+    pub fn width(&self) -> i32 {
+        self.width
     }
-}
 
-use std::fmt;
+    pub fn height(&self) -> i32 {
+        self.height
+    }
 
-impl fmt::Display for Universe {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        for line in self.cells.as_slice().chunks(self.width as usize) {
-            for &cell in line {
-                let symbol = if cell == Cell::Dead { '◻' } else { '◼' };
-                write!(f, "{}", symbol)?;
+    pub fn cells(&self) -> *const Cell {
+        self.cells.as_ptr()
+    }
+
+    pub fn paint(&mut self, x: i32, y: i32, size: i32, species: Species) {
+        let size = size;
+        let radius: f64 = (size as f64) / 2.0;
+        // let radius: f64 = (size as f64);
+
+        let floor = (radius + 1.0) as i32;
+        let ciel = (radius + 1.5) as i32;
+
+        unsafe {
+            log!("x {}: ", x);
+            log!("y {}: ", y);
+            log!("size {}: ", size);
+            log!("floor {}: ", floor);
+            log!("ciel {}: ", ciel);
+            log!("species {:?}: ", species);
+            log!("self.cells {:?}: ", self.cells);
+        }
+
+        for dx in -floor..ciel {
+            for dy in -floor..ciel {
+                if (((dx * dx) + (dy * dy)) as f64) > (radius * radius) {
+                    continue;
+                };
+                let px = x + dx;
+                let py = y + dy;
+                let i = self.get_index(px, py);
+
+                if px < 0 || px > self.width - 1 || py < 0 || py > self.height - 1 {
+                    continue;
+                }
+
+                // let test = self.get_cell(px, py).species;
+                // unsafe {
+                //     log!("test {:?}", test);
+                //     log!("type {:?}", Species::Empty);
+                // }
+                if self.get_cell(px, py).species == Species::Empty || species == Species::Empty {
+                    self.cells[i] = Cell {
+                        species: species,
+                        ra: 60
+                            + (size as u8)
+                            + (self.rng.gen::<f32>() * 30.) as u8
+                            + ((self.generation % 127) as i8 - 60).abs() as u8,
+                        rb: 0,
+                        clock: self.generation,
+                    };
+                }
             }
-            write!(f, "\n")?;
         }
-
-        Ok(())
     }
 }

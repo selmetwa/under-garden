@@ -12,6 +12,9 @@ default = ["console_error_panic_hook"]
 
 [dependencies]
 wasm-bindgen = "0.2.63"
+js-sys = "0.3.19"
+rand_xoshiro = "0.6.0"
+rand = "0.8.3"
 
 # The `console_error_panic_hook` crate provides better debugging of panics by
 # logging them with `console.error`. This is great for development, but requires
@@ -32,3 +35,15 @@ wasm-bindgen-test = "0.3.13"
 [profile.release]
 # Tell `rustc` to optimize for small code size.
 opt-level = "s"
+
+
+[dependencies.getrandom]
+features = [
+    "js",
+]
+
+[dependencies.web-sys]
+version = "0.3"
+features = [
+  "console",
+]
