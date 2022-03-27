@@ -1,11 +1,8 @@
+use crate::update_sand;
+use crate::update_water;
+use crate::Cell;
+use crate::SandApi;
 use wasm_bindgen::prelude::*;
-
-pub struct Cell {
-    species: Species,
-    ra: u8,
-    rb: u8,
-    clock: u8,
-}
 
 #[wasm_bindgen]
 #[repr(u8)]
@@ -14,14 +11,22 @@ pub enum Species {
     Empty = 0,
     Wall = 1,
     Sand = 2,
+    Water = 3,
+    Mud = 4,
 }
 
 impl Species {
-    pub fn update(&self, cell: Cell) {
+    pub fn update(&self, cell: Cell, api: SandApi) {
         match self {
             Species::Empty => {}
             Species::Wall => {}
-            Species::Sand => {}
+            Species::Sand => update_sand::update_sand(cell, api),
+            Species::Water => update_water::update_water(cell, api),
+            Species::Mud => {}
         }
     }
 }
+
+// fun dig(cell: Cell, mut api: SandApi) {
+//   if ()
+// }
