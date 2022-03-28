@@ -2,8 +2,12 @@ extern crate js_sys;
 extern crate web_sys;
 
 mod species;
+mod update_dynamite;
 mod update_sand;
+mod update_smoke;
+mod update_steam;
 mod update_water;
+mod update_worm;
 mod utils;
 
 use rand::{Rng, SeedableRng};
@@ -37,13 +41,13 @@ pub struct Universe {
     generation: u8,
 }
 
-pub struct SandApi<'a> {
+pub struct CellApi<'a> {
     x: i32,
     y: i32,
     universe: &'a mut Universe,
 }
 
-impl<'a> SandApi<'a> {
+impl<'a> CellApi<'a> {
     pub fn get(&mut self, dx: i32, dy: i32) -> Cell {
         if dx > 5 || dx < -5 || dy > 5 || dy < -5 {
             panic!("oob set");
@@ -134,13 +138,27 @@ impl Cell {
             clock: 0,
         }
     }
-    pub fn update(&self, api: SandApi) {
+    pub fn update(&self, api: CellApi) {
         self.species.update(*self, api);
     }
 }
 
 static EMPTY_CELL: Cell = Cell {
     species: Species::Empty,
+    ra: 0,
+    rb: 0,
+    clock: 0,
+};
+
+static STEAM_CELL: Cell = Cell {
+    species: Species::Steam,
+    ra: 0,
+    rb: 0,
+    clock: 0,
+};
+
+static SMOKE_CELL: Cell = Cell {
+    species: Species::Smoke,
     ra: 0,
     rb: 0,
     clock: 0,
@@ -162,7 +180,6 @@ static SAND_CELL: Cell = Cell {
 
 static WALL_CELL: Cell = Cell {
     species: Species::Wall,
-    // ra: 15,
     ra: 0,
     rb: 0,
     clock: 0,
@@ -189,12 +206,11 @@ impl Universe {
             };
 
             for y in 0..self.height {
-                let idx = self.get_index(scanx, y);
                 let cell = self.get_cell(scanx, y);
 
                 Universe::update_cell(
                     cell,
-                    SandApi {
+                    CellApi {
                         universe: self,
                         x: scanx,
                         y,
@@ -268,7 +284,7 @@ impl Universe {
 
 //private methods
 impl Universe {
-    fn update_cell(cell: Cell, api: SandApi) {
+    fn update_cell(cell: Cell, api: CellApi) {
         if cell.clock - api.universe.generation == 1 {
             return;
         }
