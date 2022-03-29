@@ -28,12 +28,20 @@ pub fn update_dynamite(cell: Cell, mut api: CellApi) {
         api.set(0, 0, STEAM_CELL);
     }
 
-    if below.species == Species::Wall || below.species == Species::Sand {
+    if below.species == Species::Wall
+        || below.species == Species::Seed
+        || below.species == Species::Plant
+        || below.species == Species::Sand
+    {
         api.set(0, -1, SMOKE_CELL);
         api.set(0, 0, EMPTY_CELL);
         api.set(1, 1, EMPTY_CELL);
         api.set(2, 2, EMPTY_CELL);
-    } else if api.get(down_x, 1).species == Species::Wall {
+    } else if api.get(down_x, 1).species == Species::Wall
+        || api.get(down_x, 1).species == Species::Sand
+        || api.get(down_x, 1).species == Species::Plant
+        || api.get(down_x, 1).species == Species::Seed
+    {
         api.set(0, -1, SMOKE_CELL);
         api.set(0, 0, EMPTY_CELL);
         api.set(down_x, 1, EMPTY_CELL);

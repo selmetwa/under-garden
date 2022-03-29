@@ -2,6 +2,7 @@ use crate::Cell;
 use crate::CellApi;
 use crate::Species;
 use crate::EMPTY_CELL;
+use crate::PLANT_CELL;
 
 pub fn update_water(cell: Cell, mut api: CellApi) {
     let mut dx = api.rand_dir();
@@ -21,6 +22,38 @@ pub fn update_water(cell: Cell, mut api: CellApi) {
         api.set(0, 0, EMPTY_CELL);
         api.set(-dx, 1, cell);
         return;
+    }
+
+    if below.species == Species::Plant {
+        api.set(0, -3, PLANT_CELL);
+        api.set(-1, -2, PLANT_CELL);
+        api.set(-2, -2, PLANT_CELL);
+        api.set(-3, -2, PLANT_CELL);
+        api.set(3, -2, PLANT_CELL);
+        api.set(2, -2, PLANT_CELL);
+        api.set(1, -1, PLANT_CELL);
+        api.set(-1, -2, PLANT_CELL);
+        api.set(-1, -1, PLANT_CELL);
+        api.set(-3, -1, PLANT_CELL);
+        api.set(-3, -2, PLANT_CELL);
+        api.set(0, -1, PLANT_CELL);
+        api.set(0, 0, PLANT_CELL);
+        api.set(0, 1, PLANT_CELL);
+        return;
+    }
+    let down_x = api.rand_dir_2();
+    if api.get(down_x, 1).species == Species::Plant {
+        let left = cell.ra % 2 == 0;
+        let stem = if left { PLANT_CELL } else { EMPTY_CELL };
+        api.set(down_x, -2, PLANT_CELL);
+        api.set(down_x, -1, PLANT_CELL);
+        api.set(2, 3, PLANT_CELL);
+        api.set(3, 1, PLANT_CELL);
+
+        api.set(-2, -1, PLANT_CELL);
+        api.set(-3, -2, PLANT_CELL);
+        api.set(0, 0, PLANT_CELL);
+        api.set(down_x, 1, PLANT_CELL);
     }
 
     let left = cell.ra % 2 == 0;

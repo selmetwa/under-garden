@@ -4,6 +4,7 @@ extern crate web_sys;
 mod species;
 mod update_dynamite;
 mod update_sand;
+mod update_seed;
 mod update_smoke;
 mod update_steam;
 mod update_water;
@@ -159,6 +160,13 @@ static STEAM_CELL: Cell = Cell {
 
 static SMOKE_CELL: Cell = Cell {
     species: Species::Smoke,
+    ra: 0,
+    rb: 0,
+    clock: 0,
+};
+
+static PLANT_CELL: Cell = Cell {
+    species: Species::Plant,
     ra: 0,
     rb: 0,
     clock: 0,

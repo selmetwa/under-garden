@@ -1,5 +1,6 @@
 use crate::update_dynamite;
 use crate::update_sand;
+use crate::update_seed;
 use crate::update_smoke;
 use crate::update_steam;
 use crate::update_water;
@@ -21,6 +22,8 @@ pub enum Species {
     Steam = 6,
     Smoke = 7,
     Worm = 8,
+    Seed = 9,
+    Plant = 10,
 }
 
 impl Species {
@@ -35,6 +38,8 @@ impl Species {
             Species::Steam => update_steam::update_steam(cell, api),
             Species::Smoke => update_smoke::update_smoke(cell, api),
             Species::Worm => update_worm::update_worm(cell, api),
+            Species::Seed => update_seed::update_seed(cell, api),
+            Species::Plant => {}
         }
     }
 }

@@ -1,10 +1,11 @@
 things
 
-- [] dynamite
-- [] steam
+- [x] dynamite
+- [x] steam
+- [x] smoke
 - [] seeds
 - [] plants
-- [] worms
+- [x] worm
 - [] fish
 - [] wood
 - [] fire
