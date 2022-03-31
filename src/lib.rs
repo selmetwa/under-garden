@@ -3,6 +3,8 @@ extern crate web_sys;
 
 mod species;
 mod update_dynamite;
+mod update_fire;
+mod update_plant;
 mod update_sand;
 mod update_seed;
 mod update_smoke;
@@ -181,6 +183,13 @@ static MUD_CELL: Cell = Cell {
 
 static SAND_CELL: Cell = Cell {
     species: Species::Sand,
+    ra: 0,
+    rb: 0,
+    clock: 0,
+};
+
+static STONE_CELL: Cell = Cell {
+    species: Species::Stone,
     ra: 0,
     rb: 0,
     clock: 0,

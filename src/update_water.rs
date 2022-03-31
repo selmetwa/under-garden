@@ -9,7 +9,10 @@ pub fn update_water(cell: Cell, mut api: CellApi) {
     let below = api.get(0, 1);
     let dx1 = api.get(dx, 1);
 
-    if below.species == Species::Empty {
+    if below.species == Species::Empty
+        || below.species == Species::Steam
+        || below.species == Species::Smoke
+    {
         api.set(0, 0, below);
         api.set(0, 1, cell);
 
@@ -25,20 +28,18 @@ pub fn update_water(cell: Cell, mut api: CellApi) {
     }
 
     if below.species == Species::Plant {
-        api.set(0, -3, PLANT_CELL);
-        api.set(-1, -2, PLANT_CELL);
-        api.set(-2, -2, PLANT_CELL);
-        api.set(-3, -2, PLANT_CELL);
-        api.set(3, -2, PLANT_CELL);
-        api.set(2, -2, PLANT_CELL);
-        api.set(1, -1, PLANT_CELL);
-        api.set(-1, -2, PLANT_CELL);
-        api.set(-1, -1, PLANT_CELL);
-        api.set(-3, -1, PLANT_CELL);
+        // api.set(0, -3, PLANT_CELL);
+        // api.set(-1, -2, PLANT_CELL);
+        // api.set(-2, -2, PLANT_CELL);
+        // api.set(-3, -2, PLANT_CELL);
+        // api.set(3, -2, PLANT_CELL);
+        // api.set(2, -2, PLANT_CELL);
+        // api.set(1, -1, PLANT_CELL);
+        // api.set(-1, -2, PLANT_CELL);
+        // api.set(-1, -1, PLANT_CELL);
+        // api.set(-3, -1, PLANT_CELL);
         api.set(-3, -2, PLANT_CELL);
         api.set(0, -1, PLANT_CELL);
-        api.set(0, 0, PLANT_CELL);
-        api.set(0, 1, PLANT_CELL);
         return;
     }
     let down_x = api.rand_dir_2();

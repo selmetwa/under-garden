@@ -8,17 +8,20 @@ pub fn update_seed(cell: Cell, mut api: CellApi) {
     let down_x = api.rand_dir_2();
     let below = api.get(0, 1);
     if below.species == Species::Sand || below.species == Species::Plant {
-        api.set(0, -3, PLANT_CELL);
-        api.set(-1, -2, PLANT_CELL);
-        api.set(-2, -2, PLANT_CELL);
         api.set(-3, -2, PLANT_CELL);
+        api.set(-2, -3, PLANT_CELL);
         api.set(3, -2, PLANT_CELL);
         api.set(2, -2, PLANT_CELL);
-        api.set(1, -1, PLANT_CELL);
+        api.set(1, -1, EMPTY_CELL);
         api.set(-1, -2, PLANT_CELL);
         api.set(-1, -1, PLANT_CELL);
-        api.set(-3, -1, PLANT_CELL);
-        api.set(-3, -2, PLANT_CELL);
+        api.set(-3, -1, EMPTY_CELL);
+        api.set(-3, 1, PLANT_CELL);
+        api.set(-3, 2, PLANT_CELL);
+        api.set(-3, 3, EMPTY_CELL);
+        api.set(-2, 3, PLANT_CELL);
+        api.set(-2, 2, PLANT_CELL);
+        api.set(-2, 1, PLANT_CELL);
         api.set(0, -1, PLANT_CELL);
         api.set(0, 0, PLANT_CELL);
         api.set(0, 1, PLANT_CELL);
