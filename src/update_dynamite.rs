@@ -12,7 +12,7 @@ pub fn update_dynamite(cell: Cell, mut api: CellApi) {
 
     if below.species == Species::Stone {
         let num = rand::thread_rng().gen_range(0..500);
-        if num >= 475 {
+        if num >= 490 {
             api.set(0, -1, SMOKE_CELL);
             api.set(0, 0, EMPTY_CELL);
             api.set(1, 1, EMPTY_CELL);
