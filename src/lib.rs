@@ -167,20 +167,6 @@ static PLANT_CELL: Cell = Cell {
     clock: 0,
 };
 
-static MUD_CELL: Cell = Cell {
-    species: Species::Mud,
-    ra: 0,
-    rb: 0,
-    clock: 0,
-};
-
-static SAND_CELL: Cell = Cell {
-    species: Species::Sand,
-    ra: 0,
-    rb: 0,
-    clock: 0,
-};
-
 static STONE_CELL: Cell = Cell {
     species: Species::Stone,
     ra: 0,
@@ -230,6 +216,15 @@ impl Universe {
         }
 
         self.generation = self.generation.wrapping_add(1);
+    }
+
+    pub fn reset(&mut self) {
+        for x in 0..self.width {
+            for y in 0..self.height {
+                let idx = self.get_index(x, y);
+                self.cells[idx] = WALL_CELL;
+            }
+        }
     }
 
     pub fn new(width: i32, height: i32) -> Universe {

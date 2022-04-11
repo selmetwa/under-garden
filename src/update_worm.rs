@@ -21,10 +21,16 @@ pub fn update_worm(cell: Cell, mut api: CellApi) {
     {
         api.set(0, 0, EMPTY_CELL);
         api.set(down_x, 1, cell);
-    } else if below.species == Species::Stone && api.get(-1, 0).species == Species::Empty {
+    } else if below.species == Species::Stone && api.get(-1, 0).species == Species::Empty
+        || api.get(-1, 0).species == Species::Sand
+        || api.get(-1, 0).species == Species::Plant
+    {
         api.set(0, 0, EMPTY_CELL);
         api.set(-1, 0, cell);
-    } else if below.species == Species::Stone && api.get(1, 0).species == Species::Empty {
+    } else if below.species == Species::Stone && api.get(1, 0).species == Species::Empty
+        || api.get(1, 0).species == Species::Sand
+        || api.get(1, 0).species == Species::Plant
+    {
         api.set(0, 0, EMPTY_CELL);
         api.set(1, 0, cell);
     } else if below.species == Species::Stone
