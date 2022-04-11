@@ -3,15 +3,12 @@ extern crate web_sys;
 
 mod species;
 mod update_dynamite;
-mod update_fire;
-mod update_plant;
 mod update_sand;
 mod update_seed;
 mod update_smoke;
 mod update_steam;
 mod update_water;
 mod update_worm;
-mod utils;
 
 use rand::{Rng, SeedableRng};
 use rand_xoshiro::SplitMix64;

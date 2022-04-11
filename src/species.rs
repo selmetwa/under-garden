@@ -1,6 +1,4 @@
 use crate::update_dynamite;
-use crate::update_fire;
-use crate::update_plant;
 use crate::update_sand;
 use crate::update_seed;
 use crate::update_smoke;
@@ -27,7 +25,6 @@ pub enum Species {
     Seed = 9,
     Plant = 10,
     Stone = 11,
-    Fire = 12,
 }
 
 impl Species {
@@ -45,7 +42,6 @@ impl Species {
             Species::Seed => update_seed::update_seed(cell, api),
             Species::Plant => {}
             Species::Stone => {}
-            Species::Fire => update_fire::update_fire(cell, api),
         }
     }
 }
