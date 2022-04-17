@@ -29,8 +29,8 @@ pub fn update_water(cell: Cell, mut api: CellApi) {
     }
 
     if below.species == Species::Plant {
-        let num = rand::thread_rng().gen_range(0..10);
-        if num >= 9 {
+        let num = rand::thread_rng().gen_range(0..100);
+        if num >= 95 {
             api.set(0, 0, EMPTY_CELL);
             api.set(dx, -1, PLANT_CELL);
             api.set(dx - 3, -1, PLANT_CELL);
