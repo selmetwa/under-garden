@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Under Garden</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+
+<body>
+  <div class="mask">
+    <div class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1>Under Garden</h1>
+          <button class="close-modal">close</button>
+        </div>
+        <hr />
+        <p>Under Garden is a tunneling/falling sand game build using Rust/WASM/HTML/CSS/JS. Inspired by <a href="https://rustwasm.github.io/book/game-of-life/introduction.html" target="_blank">Conways' Game of Life</a> &
+          <a href="https://sandspiel.club/" target="_blank">Sandspeil</a>. With code borrowed from both.
+        </p>
+        <hr />
+        <ul>
+          <lt>Cells</lt>
+          <li>
+            <h4>Soil</h4>
+            <p>Used to plant seeds.</p>
+          </li>
+          <li>
+            <h4>Water</h4>
+            <p>Waters seeds, and makes plants grow.</p>
+          </li>
+          <li>
+            <h4>Dynamite</h4>
+            <p>Blows through other materials, creates steam if it comes in contact with water. Creates debris if it comes in contact with anything else. Stone can slow dynamite slightly.</p>
+          </li>
+          <li>
+            <h4>Worms</h4>
+            <p>Travel in groups of 3-5. Eat through all materials but stone.</p>
+          </li>
+          <li>
+            <h4>Seeds</h4>
+            <p>Used to create plants, must land in soil to turn into a plant.</p>
+          </li>
+          <li>
+            <h4>Stone</h4>
+            <p>Blocks stuff.</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <canvas id="game-of-life-canvas"></canvas>
+    <aside>
+      <h3 class="first-header-tag">Cursor Size (1-4)</h3>
+      <div class="buttons">
+        <button value="5" class="size-button five-button">
+          <div class="circle five"></div>
+        </button>
+        <button value="10" class="size-button ten-button ten active">
+          <div class="circle ten"></div>
+        </button>
+        <button value="25" class="size-button twenty-five-button twenty-five">
+          <div class="circle twenty-five"></div>
+        </button>
+        <button value="50" class="size-button fifty-button">
+          <div class="circle fifty"></div>
+        </button>
+      </div>
+      <h3>Cell types (q-f)</h3>
+      <div class="species-buttons">
+        <button value="Empty" class="species-button active empty-button top-species">Dig</button>
+        <button value="Sand" class="species-button sand-button top-species">Soil</button>
+        <button value="Water" class="species-button water-button top-species">Water</button>
+        <button value="Dynamite" class="species-button dynamite-button bot-species">Dynamite</button>
+        <button value="Worm" class="species-button worm-button bot-species">Worms</button>
+        <button value="Seed" class="species-button seed-button bot-species">Seed</button>
+        <button value="Stone" class="species-button stone-button bot-species">Stone</button>
+      </div>
+      <div>
+        <button class="control-button pause">Pause</button>
+        <button class="control-button reset">Reset</button>
+        <button class="control-button about">About</button>
+      </div>
+
+      <div class="audio-wrapper">
+        <h3>Everything is better with music</h3>
+        <audio controls autoplay loop>
+          <source src="./music.mp3" type="audio/mp3">
+      </audio>
+      </div>
+
+    </aside>
+  </main>
+  <script src="./bootstrap.js"></script>
+</body>
+
+</html>
