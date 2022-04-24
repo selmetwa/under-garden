@@ -5,3 +5,5 @@ import ("./index.js")
 .catch(e => console.error("Error importing `index.js`:", e));
 
 import ('./styles.css').catch(e => console.log('error import styles'))
+
+import ("./music.mp3").catch(e => console.log('error importing tunes'))
