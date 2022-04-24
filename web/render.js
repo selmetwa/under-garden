@@ -1,5 +1,5 @@
-import { Universe, Cell, Species } from "wasm-game-of-life";
-import { memory } from "wasm-game-of-life/wasm_game_of_life_bg";
+// import { Universe, Cell, Species } from "wasm-game-of-life";
+import { memory } from "../pkg/wasm_game_of_life_bg";
 import r from 'regl';
 let fsh = require('./glsl/cell.glsl');
 let vsh = require('./glsl/cellVertex.glsl');

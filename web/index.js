@@ -1,4 +1,5 @@
-import { Universe, Cell, Species } from "wasm-game-of-life";
+// import { Universe, Cell, Species } from "wasm-game-of-life";
+import { Universe, Cell, Species } from '../pkg/wasm_game_of_life';
 import { startWebGL } from "./render";
 import {
   eventDistance,
